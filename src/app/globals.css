@@ -285,33 +285,97 @@ html {
   transition: transform 0.3s ease;
 }
 
+/* Animaciones de la galeria */
+.gallery-item
+{
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px) scale(0.9);
+}
 
+.gallery-item.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
 
+.gallery-item.hidden {
+  opacity: 0;
+  transform: translateY(30px) scale(0.9);
+}
 
+/* Etiqueta de categoría */
+.categoria-tag {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
+/* Efecto de pulso en botones activos */
+.filter-btn.active {
+  background-color: #333;
+  color: white;
+  animation: pulse 2s infinite;
+}
 
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(51, 51, 51, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(51, 51, 51, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(51, 51, 51, 0);
+  }
+}
 
+/* Contador de fotos */
+.gallery-counter {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: #666;
+}
 
+/* Spinner styles */
+/* Loading Spinner */
+.loading-spinner {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
 
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* Efecto hover mejorado */
+.gallery-item:hover {
+  transform: scale(1.05) rotate(1deg);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
 
 
 /* ----------------------- RESPONSIVE DESIGN ------------------------------------- */
