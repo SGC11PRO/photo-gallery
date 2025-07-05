@@ -344,7 +344,13 @@ export default function Home() {
           <div className="modal-overlay" onClick={cerrarModal}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <button className="modal-close" onClick={cerrarModal}>
-                ×
+                  <Image 
+                    src={'/images/close.png'}
+                    alt="Next icon"
+                    width={20}
+                    height={20}
+                    className="modal-nav-img"
+                  />
               </button>
 
               <button
