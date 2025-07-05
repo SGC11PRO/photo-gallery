@@ -158,6 +158,8 @@ export default function Home() {
   const [categoriaActiva, setCategoriaActiva] = useState("All")
   const [fotosVisibles, setFotosVisibles] = useState<number[]>([])
   const [cargando] = useState(false)
+  const [imagenModal, setImagenModal] = useState<(typeof fotos)[0] | null>(null)
+  const [indiceModal, setIndiceModal] = useState<number>(0)
 
   const categorias = ["All", "Nature", "Urban", "Close-up"]
 
@@ -171,6 +173,34 @@ export default function Home() {
     setCategoriaActiva(categoria)
   }
 
+  // Función para abrir modal
+  const abrirModal = (foto: (typeof fotos)[0]) => {
+    const indice = fotosFiltradas.findIndex((f) => f.id === foto.id)
+    setIndiceModal(indice)
+    setImagenModal(foto)
+    document.body.style.overflow = "hidden" // Prevent background scrolling
+  }
+
+  // Función para cerrar modal
+  const cerrarModal = () => {
+    setImagenModal(null)
+    document.body.style.overflow = "unset"
+  }
+
+  // Función para navegar en el modal
+  const navegarModal = (direccion: "prev" | "next") => {
+    let nuevoIndice = indiceModal
+
+    if (direccion === "next") {
+      nuevoIndice = (indiceModal + 1) % fotosFiltradas.length
+    } else {
+      nuevoIndice = indiceModal === 0 ? fotosFiltradas.length - 1 : indiceModal - 1
+    }
+
+    setIndiceModal(nuevoIndice)
+    setImagenModal(fotosFiltradas[nuevoIndice])
+  }
+
   // Efecto de aparicion gradual de las fotos - Fixed dependencies
   useEffect(() => {
     setFotosVisibles([])
@@ -181,6 +211,30 @@ export default function Home() {
       }, Math.random() * 500)
     })
   }, [fotosFiltradas]) // Removed 'fotos' from dependencies since it's now constant
+
+  // Efecto para manejar teclas del modal
+  useEffect(() => {
+    const manejarTecla = (e: KeyboardEvent) => {
+      if (!imagenModal) return
+
+      switch (e.key) {
+        case "Escape":
+          cerrarModal()
+          break
+        case "ArrowLeft":
+          navegarModal("prev")
+          break
+        case "ArrowRight":
+          navegarModal("next")
+          break
+      }
+    }
+
+    if (imagenModal) {
+      document.addEventListener("keydown", manejarTecla)
+      return () => document.removeEventListener("keydown", manejarTecla)
+    }
+  }, [imagenModal, indiceModal, fotosFiltradas])
 
   // return -------------------------------------
   return (
@@ -267,7 +321,12 @@ export default function Home() {
               </div>
             ) : (
               fotosFiltradas.map((foto) => (
-                <div key={foto.id} className={`gallery-item ${fotosVisibles.includes(foto.id) ? "visible" : "hidden"}`}>
+                <div
+                  key={foto.id}
+                  className={`gallery-item ${fotosVisibles.includes(foto.id) ? "visible" : "hidden"}`}
+                  onClick={() => abrirModal(foto)}
+                  style={{ cursor: "pointer" }}
+                >
                   <Image src={foto.src || "/placeholder.svg"} alt={foto.titulo} width={400} height={300} />
                   <div className="gallery-overlay">
                     <h3>{foto.titulo}</h3>
@@ -279,6 +338,64 @@ export default function Home() {
             )}
           </div>
         </section>
+
+        {/* Modal Component */}
+        {imagenModal && (
+          <div className="modal-overlay" onClick={cerrarModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close" onClick={cerrarModal}>
+                ×
+              </button>
+
+              <button
+                className="modal-nav modal-prev"
+                onClick={() => navegarModal("prev")}
+                disabled={fotosFiltradas.length <= 1}
+              >
+                <Image 
+                  src={'/images/prev.png'}
+                  alt="Next icon"
+                  width={20}
+                  height={20}
+                  className="modal-nav-img"
+                />
+              </button>
+
+              <div className="modal-image-container">
+                <Image
+                  src={imagenModal.src || "/placeholder.svg"}
+                  alt={imagenModal.titulo}
+                  width={1200}
+                  height={800}
+                  className="modal-image"
+                  priority
+                />
+                <div className="modal-info">
+                  <h3>{imagenModal.titulo}</h3>
+                  <p>{imagenModal.descripcion}</p>
+                  <span className="modal-categoria">{imagenModal.categoria}</span>
+                  <div className="modal-counter">
+                    {indiceModal + 1} / {fotosFiltradas.length}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                className="modal-nav modal-next"
+                onClick={() => navegarModal("next")}
+                disabled={fotosFiltradas.length <= 1}
+              >
+              <Image 
+                src={'/images/next.png'}
+                alt="Next icon"
+                width={20}
+                height={20}
+                className="modal-nav-img"
+              />
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )
