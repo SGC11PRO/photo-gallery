@@ -125,7 +125,7 @@ html {
   height: 100vh;
   background: 
     linear-gradient(var(--gray-300), var(--gray-600)), 
-    url('../../public/images/placeholder.webp');
+    url('../../public/images/background.webp');
 
   background-blend-mode: multiply;
   background-size: cover;
