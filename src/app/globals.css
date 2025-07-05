@@ -123,9 +123,7 @@ html {
 .hero
 {
   height: 100vh;
-  background: 
-    linear-gradient(var(--gray-300), var(--gray-600)), 
-    url('../../public/images/background.webp');
+  background: linear-gradient(var(--gray-300), var(--gray-600)), url('/images/background.png');
 
   background-blend-mode: multiply;
   background-size: cover;
